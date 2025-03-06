@@ -28,3 +28,26 @@ the project website:
        src="https://scan.coverity.com/projects/12003/badge.svg"/>
 </a>
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/kraj/musl/blob/kraj/master/COPYRIGHT)
+
+
+
+Commands to run for adding instrumentation to generate an executable of C file
+/usr/local/bin/clang -emit-llvm -S hello.c
+/usr/local/bin/opt -load /home/kunalpansare/llvm-pass-skeleton/build/skeleton/libSkeletonPass.* -skeleton -S hello.ll -o test_pass.ll
+/usr/local/bin/clang -c test_pass.ll
+/usr/local/bin/clang -c extras.c
+/usr/local/bin/clang extras.o test_pass.o -o test.bin -L/usr/lib -I/usr/local/musl/include -lc -static
+./test.bin
+
+Non instrumented version
+/usr/local/bin/clang -o helloworld hello.c -L/usr/lib -I/usr/local/musl/include -lc -static
+./helloworld
+
+The makefile contains both, compiling musl with clang(instrumented and non-instrumented) version.
+Non instrumented version commented at the bottom.
+To build run the following commands
+cd musl
+sudo make clean
+sudo make
+sudo make install
+
